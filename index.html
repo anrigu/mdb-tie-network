@@ -104,7 +104,7 @@
     <button id="mFin">Finance focus</button>
   </div>
   <label class="wb"><input type="checkbox" id="wb"> show World Bank hub</label>
-  <label class="wb"><input type="checkbox" id="minor"> show single-person orgs</label>
+  <label class="wb"><input type="checkbox" id="minor" checked> show single-person orgs</label>
   <div class="searchbox">
     <input id="q" type="search" placeholder="Find an organization…" autocomplete="off">
     <div class="hits" id="hits"></div>
@@ -200,10 +200,12 @@ function build() {
 
 function tick(iter) {
   const k = Math.max(0.1, 0.9 - iter * 0.0021);
+  const big = nodes.length > 900; // skip person-person repulsion at scale
   for (let i = 0; i < nodes.length; i++) {
     const a = nodes[i];
     for (let j = i + 1; j < nodes.length; j++) {
       const b = nodes[j];
+      if (big && a.kind === 'person' && b.kind === 'person') continue;
       let dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy + 0.01;
       const rep = (a.kind === 'org' && b.kind === 'org') ? 2600 : 380;
       if (d2 < 100000) { const f = rep * k / d2;
